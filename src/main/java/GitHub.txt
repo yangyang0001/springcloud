@@ -1,0 +1,23 @@
+GitHub token:
+    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
+    2017585616@qq.com
+
+重置远程仓库的token:
+    git remote set-url origin https://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@github.com/yangyang0001/springcloud.git
+
+特别注意在申请token时全选就OK了, 否则权限不足!
+
+password 设置为上面的 token
+
+
+操作流程:
+        1、每次都生成新的token
+        2、执行性的命令 git remote set-url origin https://<token>@github.com/<username>/<repository_name>.git
+        3、git add .
+        4、git commit -m ""
+        5、git push
+
+        首先 删除文件夹下的 .git文件
+        其次 git remote add origin https://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@github.com/yangyang0001/springcloud.git
+
+        git remote set-url origin https://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@github.com/yangyang0001/springcloud.git

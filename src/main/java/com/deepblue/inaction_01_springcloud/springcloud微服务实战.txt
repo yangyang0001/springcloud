@@ -1,6 +1,242 @@
 --------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------- 第3章 服务治理 Spring Cloud Eureka --------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------
+参考 springcloud_eureka_server、springcloud_hello_service、springcloud_hello_service_api
+
+查看 springboot 和 springcloud 版本之间的 对应关系:
+
+网址: https://start.spring.io/actuator/info
+
+内容:
+    {
+    	"git": {
+    		"branch": "5022b8203dc11a578dc704f047ee3127d357b229",
+    		"commit": {
+    			"id": "5022b82",
+    			"time": "2022-02-27T17:06:54Z"
+    		}
+    	},
+    	"build": {
+    		"version": "0.0.1-SNAPSHOT",
+    		"artifact": "start-site",
+    		"versions": {
+    			"spring-boot": "2.6.4",
+    			"initializr": "0.13.0-SNAPSHOT"
+    		},
+    		"name": "start.spring.io website",
+    		"time": "2022-02-27T17:08:22.609Z",
+    		"group": "io.spring.start"
+    	},
+    	"bom-ranges": {
+    		"azure": {
+    			"3.2.0": "Spring Boot >=2.3.0.M1 and <2.4.0-M1",
+    			"3.5.0": "Spring Boot >=2.4.0.M1 and <2.5.0-M1",
+    			"3.13.0": "Spring Boot >=2.5.0.M1 and <2.7.0-M1"
+    		},
+    		"codecentric-spring-boot-admin": {
+    			"2.4.3": "Spring Boot >=2.3.0.M1 and <2.5.0-M1",
+    			"2.5.5": "Spring Boot >=2.5.0.M1 and <2.6.0-M1",
+    			"2.6.2": "Spring Boot >=2.6.0.M1 and <2.7.0-M1"
+    		},
+    		"solace-spring-boot": {
+    			"1.1.0": "Spring Boot >=2.3.0.M1 and <2.6.0-M1"
+    		},
+    		"solace-spring-cloud": {
+    			"1.1.1": "Spring Boot >=2.3.0.M1 and <2.4.0-M1",
+    			"2.1.0": "Spring Boot >=2.4.0.M1 and <2.6.0-M1"
+    		},
+    		"spring-cloud": {
+    			"Hoxton.SR12": "Spring Boot >=2.2.0.RELEASE and <2.4.0.M1",
+    			"2020.0.5": "Spring Boot >=2.4.0.M1 and <2.6.0-M1",
+    			"2021.0.0-M1": "Spring Boot >=2.6.0-M1 and <2.6.0-M3",
+    			"2021.0.0-M3": "Spring Boot >=2.6.0-M3 and <2.6.0-RC1",
+    			"2021.0.0-RC1": "Spring Boot >=2.6.0-RC1 and <2.6.1",
+    			"2021.0.1": "Spring Boot >=2.6.1 and <2.6.5-SNAPSHOT",
+    			"2021.0.2-SNAPSHOT": "Spring Boot >=2.6.5-SNAPSHOT and <3.0.0-M1",
+    			"2022.0.0-M1": "Spring Boot >=3.0.0-M1 and <3.1.0-M1"
+    		},
+    		"spring-cloud-gcp": {
+    			"2.0.8": "Spring Boot >=2.4.0-M1 and <2.6.0-M1",
+    			"3.1.0": "Spring Boot >=2.6.0-M1 and <2.7.0-M1"
+    		},
+    		"spring-cloud-services": {
+    			"2.3.0.RELEASE": "Spring Boot >=2.3.0.RELEASE and <2.4.0-M1",
+    			"2.4.1": "Spring Boot >=2.4.0-M1 and <2.5.0-M1",
+    			"3.3.0": "Spring Boot >=2.5.0-M1 and <2.6.0-M1",
+    			"3.4.0": "Spring Boot >=2.6.0-M1 and <2.7.0-M1"
+    		},
+    		"spring-geode": {
+    			"1.3.12.RELEASE": "Spring Boot >=2.3.0.M1 and <2.4.0-M1",
+    			"1.4.13": "Spring Boot >=2.4.0-M1 and <2.5.0-M1",
+    			"1.5.9": "Spring Boot >=2.5.0-M1 and <2.6.0-M1",
+    			"1.6.3": "Spring Boot >=2.6.0-M1 and <2.7.0-M1",
+    			"1.7.0-M1": "Spring Boot >=2.7.0-M1 and <2.8.0-M1"
+    		},
+    		"vaadin": {
+    			"14.8.4": "Spring Boot >=2.1.0.RELEASE and <2.8.0-M1"
+    		},
+    		"wavefront": {
+    			"2.0.2": "Spring Boot >=2.1.0.RELEASE and <2.4.0-M1",
+    			"2.1.1": "Spring Boot >=2.4.0-M1 and <2.5.0-M1",
+    			"2.2.2": "Spring Boot >=2.5.0-M1 and <2.7.0-M1"
+    		}
+    	},
+    	"dependency-ranges": {
+    		"native": {
+    			"0.9.0": "Spring Boot >=2.4.3 and <2.4.4",
+    			"0.9.1": "Spring Boot >=2.4.4 and <2.4.5",
+    			"0.9.2": "Spring Boot >=2.4.5 and <2.5.0-M1",
+    			"0.10.0": "Spring Boot >=2.5.0-M1 and <2.5.2",
+    			"0.10.1": "Spring Boot >=2.5.2 and <2.5.3",
+    			"0.10.2": "Spring Boot >=2.5.3 and <2.5.4",
+    			"0.10.3": "Spring Boot >=2.5.4 and <2.5.5",
+    			"0.10.4": "Spring Boot >=2.5.5 and <2.5.6",
+    			"0.10.5": "Spring Boot >=2.5.6 and <2.5.9",
+    			"0.10.6": "Spring Boot >=2.5.9 and <2.6.0-M1",
+    			"0.11.0-M1": "Spring Boot >=2.6.0-M1 and <2.6.0-RC1",
+    			"0.11.0-M2": "Spring Boot >=2.6.0-RC1 and <2.6.0",
+    			"0.11.0-RC1": "Spring Boot >=2.6.0 and <2.6.1",
+    			"0.11.0": "Spring Boot >=2.6.1 and <2.6.2",
+    			"0.11.1": "Spring Boot >=2.6.2 and <2.6.2",
+    			"0.11.2": "Spring Boot >=2.6.3 and <2.6.5-SNAPSHOT",
+    			"0.11.3-SNAPSHOT": "Spring Boot >=2.6.5-SNAPSHOT and <2.7.0-M1"
+    		},
+    		"okta": {
+    			"1.4.0": "Spring Boot >=2.2.0.RELEASE and <2.4.0-M1",
+    			"1.5.1": "Spring Boot >=2.4.0-M1 and <2.4.1",
+    			"2.0.1": "Spring Boot >=2.4.1 and <2.5.0-M1",
+    			"2.1.4": "Spring Boot >=2.5.0-M1 and <2.7.0-M1"
+    		},
+    		"mybatis": {
+    			"2.1.4": "Spring Boot >=2.1.0.RELEASE and <2.5.0-M1",
+    			"2.2.2": "Spring Boot >=2.5.0-M1"
+    		},
+    		"camel": {
+    			"3.5.0": "Spring Boot >=2.3.0.M1 and <2.4.0-M1",
+    			"3.10.0": "Spring Boot >=2.4.0.M1 and <2.5.0-M1",
+    			"3.13.0": "Spring Boot >=2.5.0.M1 and <2.6.0-M1",
+    			"3.15.0": "Spring Boot >=2.6.0.M1 and <2.7.0-M1"
+    		},
+    		"picocli": {
+    			"4.6.2": "Spring Boot >=2.4.0.RELEASE and <2.6.0-M1"
+    		},
+    		"open-service-broker": {
+    			"3.2.0": "Spring Boot >=2.3.0.M1 and <2.4.0-M1",
+    			"3.3.1": "Spring Boot >=2.4.0-M1 and <2.5.0-M1",
+    			"3.4.0-M2": "Spring Boot >=2.5.0-M1 and <2.6.0-M1"
+    		}
+    	}
+    }
+
+// 原来的内容:
+    {
+        "git": {
+            "branch": "72506972926758dc1808eaa450281274ee85459a",
+            "commit": {
+                "id": "7250697",
+                "time": "2020-08-17T15:37:11Z"
+            }
+        },
+        "build": {
+            "version": "0.0.1-SNAPSHOT",
+            "artifact": "start-site",
+            "versions": {
+                "spring-boot": "2.3.3.RELEASE",
+                "initializr": "0.9.2-SNAPSHOT"
+            },
+            "name": "start.spring.io website",
+            "time": "2020-08-17T15:38:19.523Z",
+            "group": "io.spring.start"
+        },
+        "bom-ranges": {
+            "azure": {
+                "2.0.10": "Spring Boot >=2.0.0.RELEASE and <2.1.0.RELEASE",
+                "2.1.10": "Spring Boot >=2.1.0.RELEASE and <2.2.0.M1",
+                "2.2.4": "Spring Boot >=2.2.0.M1 and <2.3.0.M1",
+                "2.3.1": "Spring Boot >=2.3.0.M1"
+            },
+            "codecentric-spring-boot-admin": {
+                "2.0.6": "Spring Boot >=2.0.0.M1 and <2.1.0.M1",
+                "2.1.6": "Spring Boot >=2.1.0.M1 and <2.2.0.M1",
+                "2.2.4": "Spring Boot >=2.2.0.M1 and <2.3.0.M1",
+                "2.3.0": "Spring Boot >=2.3.0.M1 and <2.4.0-M1"
+            },
+            "solace-spring-boot": {
+                "1.0.0": "Spring Boot >=2.2.0.RELEASE and <2.3.0.M1",
+                "1.1.0": "Spring Boot >=2.3.0.M1"
+            },
+            "solace-spring-cloud": {
+                "1.0.0": "Spring Boot >=2.2.0.RELEASE and <2.3.0.M1",
+                "1.1.1": "Spring Boot >=2.3.0.M1"
+            },
+            "spring-cloud": {
+                "Finchley.M2": "Spring Boot >=2.0.0.M3 and <2.0.0.M5",
+                "Finchley.M3": "Spring Boot >=2.0.0.M5 and <=2.0.0.M5",
+                "Finchley.M4": "Spring Boot >=2.0.0.M6 and <=2.0.0.M6",
+                "Finchley.M5": "Spring Boot >=2.0.0.M7 and <=2.0.0.M7",
+                "Finchley.M6": "Spring Boot >=2.0.0.RC1 and <=2.0.0.RC1",
+                "Finchley.M7": "Spring Boot >=2.0.0.RC2 and <=2.0.0.RC2",
+                "Finchley.M9": "Spring Boot >=2.0.0.RELEASE and <=2.0.0.RELEASE",
+                "Finchley.RC1": "Spring Boot >=2.0.1.RELEASE and <2.0.2.RELEASE",
+                "Finchley.RC2": "Spring Boot >=2.0.2.RELEASE and <2.0.3.RELEASE",
+                "Finchley.SR4": "Spring Boot >=2.0.3.RELEASE and <2.0.999.BUILD-SNAPSHOT",
+                "Finchley.BUILD-SNAPSHOT": "Spring Boot >=2.0.999.BUILD-SNAPSHOT and <2.1.0.M3",
+                "Greenwich.M1": "Spring Boot >=2.1.0.M3 and <2.1.0.RELEASE",
+                "Greenwich.SR6": "Spring Boot >=2.1.0.RELEASE and <2.1.17.BUILD-SNAPSHOT",
+                "Greenwich.BUILD-SNAPSHOT": "Spring Boot >=2.1.17.BUILD-SNAPSHOT and <2.2.0.M4",
+                "Hoxton.SR7": "Spring Boot >=2.2.0.M4 and <2.3.4.BUILD-SNAPSHOT",
+                "Hoxton.BUILD-SNAPSHOT": "Spring Boot >=2.3.4.BUILD-SNAPSHOT and <2.4.0.M1",
+                "2020.0.0-SNAPSHOT": "Spring Boot >=2.4.0.M1"
+            },
+            "spring-cloud-alibaba": {
+                "2.2.1.RELEASE": "Spring Boot >=2.2.0.RELEASE and <2.3.0.M1"
+            },
+            "spring-cloud-services": {
+                "2.0.3.RELEASE": "Spring Boot >=2.0.0.RELEASE and <2.1.0.RELEASE",
+                "2.1.7.RELEASE": "Spring Boot >=2.1.0.RELEASE and <2.2.0.RELEASE",
+                "2.2.3.RELEASE": "Spring Boot >=2.2.0.RELEASE and <2.3.0.M1"
+            },
+            "spring-statemachine": {
+                "2.0.0.M4": "Spring Boot >=2.0.0.RC1 and <=2.0.0.RC1",
+                "2.0.0.M5": "Spring Boot >=2.0.0.RC2 and <=2.0.0.RC2",
+                "2.0.1.RELEASE": "Spring Boot >=2.0.0.RELEASE"
+            },
+            "vaadin": {
+                "10.0.17": "Spring Boot >=2.0.0.M1 and <2.1.0.M1",
+                "14.3.3": "Spring Boot >=2.1.0.M1 and <2.4.0-M1"
+            },
+            "wavefront": {
+                "2.0.0": "Spring Boot >=2.1.0.RELEASE"
+            }
+        },
+        "dependency-ranges": {
+            "okta": {
+                "1.2.1": "Spring Boot >=2.1.2.RELEASE and <2.2.0.M1",
+                "1.4.0": "Spring Boot >=2.2.0.M1 and <2.4.0-M1"
+            },
+            "mybatis": {
+                "2.0.1": "Spring Boot >=2.0.0.RELEASE and <2.1.0.RELEASE",
+                "2.1.3": "Spring Boot >=2.1.0.RELEASE and <2.4.0-M1"
+            },
+            "geode": {
+                "1.2.9.RELEASE": "Spring Boot >=2.2.0.M5 and <2.3.0.M1",
+                "1.3.2.RELEASE": "Spring Boot >=2.3.0.M1 and <2.4.0-M1",
+                "1.4.0-M1": "Spring Boot >=2.4.0-M1"
+            },
+            "camel": {
+                "2.22.4": "Spring Boot >=2.0.0.M1 and <2.1.0.M1",
+                "2.25.2": "Spring Boot >=2.1.0.M1 and <2.2.0.M1",
+                "3.3.0": "Spring Boot >=2.2.0.M1 and <2.3.0.M1",
+                "3.4.3": "Spring Boot >=2.3.0.M1 and <2.4.0-M1"
+            },
+            "open-service-broker": {
+                "2.1.3.RELEASE": "Spring Boot >=2.0.0.RELEASE and <2.1.0.M1",
+                "3.0.4.RELEASE": "Spring Boot >=2.1.0.M1 and <2.2.0.M1",
+                "3.1.1.RELEASE": "Spring Boot >=2.2.0.M1 and <2.4.0-M1"
+            }
+        }
+    }
+
 服务注册 和 服务发现 是 Eureka 提供的两种功能!
 
 Eureka 服务端:
@@ -25,6 +261,8 @@ Ribbon 的使用在新版中已经被封装掉了, 使用 @RestController 和  R
 --------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------- 第4章 客户端负载均衡 Spring Cloud Ribbon ---------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------
+参考 springcloud_ribbon_consumer 已经被默认集成到 spring cloud feign 和 spring cloud hystrix 中了
+
 spring cloud ribbon
     它是什么: 是一中 http + tcp 的 客户端负载均衡
     使用方式: 在最新的springcloud 中已经屏蔽掉这块了使用 @RestController 和 被@LoadBalanced 修饰过的 RestTemplate 就可以直接使用
@@ -33,26 +271,403 @@ spring cloud ribbon
 --------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------- 第5章 客户端负载均衡 Spring Cloud Hystrix --------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------
+参考 springcloud_ribbon_consumer, 如果是整合的 feign 客户端则 查看 springcloud_feign_consumer
+
 spring cloud hystrix 是熔断降级的一种东西!
 
+源码解析:
+    /**
+     * 该注释用于指定一些方法, 这些方法应该作为 hystrix 命令处理。
+     * This annotation used to specify some methods which should be processes as hystrix commands.
+     */
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Inherited
+    @Documented
+    public @interface HystrixCommand {
+
+        /**
+         * 命令组键用于将命令组合在一起, 例如报告、警报、仪表板或团队/库所有权。
+         * The command group key is used for grouping together commands such as for reporting, alerting, dashboards or team/library ownership.
+         * <p/>
+         *
+         * default => 被注解的方法的运行时类名
+         * default => the runtime class name of annotated method
+         *
+         * @return group key
+         */
+        String groupKey() default "";
+
+        /**
+         * Hystrix 命令键。
+         * Hystrix command key.
+         *
+         * <p/>
+         * default => 注释方法的名称。 例如：
+         * default => the name of annotated method. for example:
+         * <code>
+         *     ...
+         *     @HystrixCommand
+         *     public User getUserById(...)
+         *     ...
+         *     命令名称将是：'getUserById'
+         *     the command name will be: 'getUserById'
+         * </code>
+         *
+         * @return 命令键
+         * @return command key
+         */
+        String commandKey() default "";
+
+        /**
+         * 线程池键 表示一个 Hystrix 线程池 用于监控、指标发布、缓存和其他此类用途。
+         * The thread-pool key is used to represent a HystrixThreadPool for monitoring, metrics publishing, caching and other such uses.
+         *
+         * @return thread pool key
+         */
+        String threadPoolKey() default "";
+
+        /**
+         *
+         * 指定处理回退逻辑的方法。
+         * Specifies a method to process fallback logic.
+         *
+         * 回退方法应该在 HystrixCommand 所在的同一个类中定义。
+         * A fallback method should be defined in the same class where is HystrixCommand.
+         *
+         * 此外, 回退方法应该 与 fallbackMethod 的值是一致的!
+         * Also a fallback method should have same signature to a method which was invoked as hystrix command.
+         *
+         * 举例:
+         * for example:
+         * <code>
+         *      @HystrixCommand(fallbackMethod = "getByIdFallback")
+         *      public String getById(String id) {...}
+         *      // 这个方法名 必须和 HystrixCommand 注解中的 fallbackMethod 值一致!
+         *      private String getByIdFallback(String id) {...}
+         * </code>
+         *
+         * 也可以使用 {@link HystrixCommand} 注释回退方法
+         * Also a fallback method can be annotated with {@link HystrixCommand}
+         * <p/>
+         *
+         * default => see {@link com.netflix.hystrix.contrib.javanica.command.GenericCommand#getFallback()}
+         *
+         * @return method name
+         */
+        String fallbackMethod() default "";
+
+        /**
+         * 指定的命令参数
+         * Specifies command properties.
+         *
+         * @return command properties
+         */
+        HystrixProperty[] commandProperties() default {};
+
+        /**
+         * 指定的线程池参数
+         * Specifies thread pool properties.
+         *
+         * @return thread pool properties
+         */
+        HystrixProperty[] threadPoolProperties() default {};
+
+        /**
+         * 定义应该被忽略的异常。
+         * Defines exceptions which should be ignored.
+         *
+         * 如果 raiseHystrixExceptions 包含 RUNTIME_EXCEPTION, 则可以选择将这些包装在 HystrixRuntimeException 中。
+         * Optionally these can be wrapped in HystrixRuntimeException if raiseHystrixExceptions contains RUNTIME_EXCEPTION.
+         *
+         * @return exceptions to ignore
+         */
+        Class<? extends Throwable>[] ignoreExceptions() default {};
+
+        /**
+         *
+         * 指定应该用于执行 hystrix observable 命令的模式。
+         * Specifies the mode that should be used to execute hystrix observable command.
+         *
+         * 有关详细信息, 请参阅 {@link ObservableExecutionMode}。
+         * For more information see {@link ObservableExecutionMode}.
+         *
+         * @return observable execution mode
+         */
+        ObservableExecutionMode observableExecutionMode() default ObservableExecutionMode.EAGER;
+
+        /**
+         * 当包含 RUNTIME_EXCEPTION 时, 任何未被忽略的异常都包装在 HystrixRuntimeException 中。
+         * When includes RUNTIME_EXCEPTION, any exceptions that are not ignored are wrapped in HystrixRuntimeException.
+         *
+         * @return exceptions to wrap
+         */
+        HystrixException[] raiseHystrixExceptions() default {};
+
+        /**
+         * 指定命令的默认回退方法。
+         * Specifies default fallback method for the command.
+         *
+         * 如果同时指定了 {@link #fallbackMethod} 和 {@link #defaultFallback} 方法, 则使用特定的方法。
+         * If both {@link #fallbackMethod} and {@link #defaultFallback} methods are specified then specific one is used.
+         *
+         * 注意：默认的 fallback 方法不能有参数, 返回类型应该 与 命令注释的方法 返回类型兼容。
+         * note: default fallback method cannot have parameters, return type should be compatible with command return type.
+         *
+         * @return the name of default fallback method
+         */
+        String defaultFallback() default "";
+    }
+
+内部实现非常麻烦, 主要使用两种设计模式 + 多线程! 设计模式参考 designpatterns + java_concurrent 中的东西! 这里作为了解!
 
 
+--------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------- 第6章 客户端负载均衡 Spring Cloud Feign ----------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------
+参考 springcloud_feign_consumer
+
+Feign 客户端的使用
+    代码重构后虽然能够起到不用 重写RequestMapping() 之类的作用, 但是它破坏了 Controller 层的定义;
+    这里的 HelloController 直接实现了 HelloService 客户端, 有的做法是 将Controller 定义为 ServiceImpl 并且加上 @RestController 的做法!
 
 
+--------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------- 第7章 API网关服务 Spring Cloud Zuul -------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------
+参考 springcloud_zuul
+
+分类: 传统路由配置 和 面向服务配置
+
+传统路由配置: 很少使用, 经常采用 面向服务配置
+    zuul.routes.api-a.path=/api-a/**
+    zuul.routes.api-a.url=http://localhost:8080/
+
+面向服务配置
+
+    举例:
+        zuul.routes.api-a.path=/api-a/**
+        zuul.routes.api-a.service-id=springcloud-hello-service
+
+        zuul.routes.api-b.path=/api-b/**
+        zuul.routes.api-b.service-id=springcloud-ribbon-consumer
+
+        zuul.routes.api-c.path=/api-c/**
+        zuul.routes.api-c.service-id=springcloud-feign-consumer
+
+    测试:
+        http://localhost:5555/api-a/hello-service-say-hello
+        http://localhost:5555/api-a/hello-service-say-hello-person?username=aaaa
+
+        http://localhost:5555/api-b/ribbon-consumer-hello
+        http://localhost:5555/api-b/ribbon-consumer-getuser?userId=1000
+
+        http://localhost:5555/api-c/feign-consumer-getuser?userId=10000
+        http://localhost:5555/api-c/feign-consumer-getuser-pass?username=bbbb&password=123456
 
 
+    更为简洁的方式为:
+        zuul.routes.<service-id>=path
+
+        service-id 为 spring.application.name
+        path       为 访问路径中的 http://localhost:5555PATH 中的 PATH 部分!
+
+    举例:
+        zuul.routes.springcloud-hello-service=/api-a/**
+        zuul.routes.springcloud-ribbon-consumer=/api-b/**
+        zuul.routes.springcloud-feign-consumer=/api-c/**
 
 
+面向服务的默认配置:
+    zuul.routes.<service-id>=/<service-id>/**
+
+    举例: 假设服务名称为 user-service 则默认配置为 zuul.routes.user-service=/user-service/**
+
+    取消默认配置: zuul.ignored-services=* 则会取消所有服务的默认路由配置, 程序员可以在配置文件中创建自己的路由配置!
+
+    相同路由匹配规则的顺序问题, 假设有 user-service 和 user-service-ext 两个应用, 更加准确的配置一定要配置在前面!
+    zuul.routes.user-service-ext=/user-service/ext/**
+    zuul.routes.user-service=/user-service/**
+
+    忽略某个路径, 不经过网关配置:
+        举例: 假设不希望 访问路径中有 hello 的方法经过网关, 配置如下:
+            # 这个是针对所有路由规则而言的忽略, 使用时要小心
+            zuul.ignored-patterns=/**/hello/**
+
+    网关重定向: 使用 forward 来进行跳转!
+        举例:
+            zuul.routes.hello-service=/hello-service/**
+            zuul.routes.first-service=forward:/hello-service/
+
+    重定向问题:
+        重定向后URL指向了具体的实例地址(具体IP:PORT) 而不是网关地址, 解决这个问题需要添加以下配置!
+        zuul.add-host-header=true
+
+ZuulFilter 源码解析和使用
+    参考 AccessFilter 的使用 和 Application.java 中的 @Bean!
+
+cookie 和 http 头部 信息问题:
+    Zuul 网关是默认去掉 HTTP 头部中的敏感信息的, 这部分敏感信息包含 Cookie、Set-Cookie、Authorization 三个属性!
+    这就要求 一些 Web 接口必须携带 http 头部中的 Header 信息, 否则登录失败; 这就得进行特殊配置!
+
+    全局设置(不推荐):
+        zuul.sensitive-headers=
+
+    局部设置(推荐使用其中之一): [假设 针对服务 hello-service 的 网关配置: zuul.routes.hello-service=/hello-service/** ]
+        # 方法1
+        zuul.routes.hello-service.sensitive-headers=
+        # 方法2
+        zuul.routes.hello-service.custom-sensitive-headers=true
 
 
+本工程中路由对应的测试连接:
+    http://localhost:5555/springcloud-hello-service/hello-service-say-hello
+    http://localhost:5555/springcloud-hello-service/hello-service-say-hello-person?username=aaaa
+
+    http://localhost:5555/springcloud-ribbon-consumer/ribbon-consumer-hello
+    http://localhost:5555/springcloud-ribbon-consumer/ribbon-consumer-getuser?userId=1111
+
+    http://localhost:5555/springcloud-feign-consumer/feign-consumer-getuser?userId=2222
+    http://localhost:5555/springcloud-feign-consumer/feign-consumer-getuser-pass?username=bbbb&password=123456
 
 
+    http://localhost:5556/springcloud-hello-service/hello-service-say-hello
+    http://localhost:5556/springcloud-hello-service/hello-service-say-hello-person?username=aaaa
+
+    http://localhost:5556/springcloud-ribbon-consumer/ribbon-consumer-hello
+    http://localhost:5556/springcloud-ribbon-consumer/ribbon-consumer-getuser?userId=1111
+
+    http://localhost:5556/springcloud-feign-consumer/feign-consumer-getuser?userId=2222
+    http://localhost:5556/springcloud-feign-consumer/feign-consumer-getuser-pass?username=bbbb&password=123456
+
+动态路由:
+    因为网关是面向外部的, 所以必须要 7 * 24 小时 一直服务, 这是刚性需求! 所以对于网关要动态添加路由, 动态删除路由, 尽量不重启!
+    这就要求 Zuul 必须有支持动态网关的服务能力, 那么Zuul 也提供了这种能力!
+
+    具体参考 springcloud_zuul, 注意 bootstrap.properties 和 Application 启动类中的 ZuulProperties
+        @RefreshScope
+        @ConfigurationProperties(prefix = "zuul")
+        public ZuulProperties zuulProperties() {
+            return new ZuulProperties();
+        }
+
+    刷新以获取最新的配置:
+        当我们每次每次修改完成 API 网关中的配置的时候, 我们必须 刷新 每个网关节点 [应该是 每个 配置中心 客户端服务节点, 这里为每个网关服务节点],
+        确保 当前节点能够获取到最新的网关配置!
+
+        # 配置 监控中心, 手动刷新网关 以获取最新的网关配置
+        management.endpoints.web.exposure.include=*
+
+        刷新使用方式(必须是POST请求):
+        curl -X POST http://localhost:5555/actuator/refresh
+        返回结果:
+        ["config.client.version","zuul.routes.springcloud-hello-service.path"]%
+
+--------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------- 第8章 分布式配置中心 Spring Cloud Config ---------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------
+参考 springcloud_config_server 作为服务端, springcloud_config_client 作为客户端!
+
+配置中心 分为 服务端 和 客户端 两部分
+
+服务端: 一个独立的服务, 连接配置仓库!
+
+客户端: 其他的微服务, 通过连接服务端, 来获取或者变更相关的配置!
+
+配置中心核心功能: 通过某种映射规则 去获取不同文件; 映射规则参考: 01_分布式配置中心映射规则.png
+
+服务端测试:
+    http://localhost:7001/didispace/master
+    {
+    	"name": "didispace",
+    	"profiles": ["master"],
+    	"label": null,
+    	"version": "e7ec50a9c4f17add19ddeff14ea43a00366c6df7",
+    	"state": null,
+    	"propertySources": [{
+    		"name": "https://github.com/yangyang0001/config/springcloud_inaction/config-repo/didispace.properties",
+    		"source": {
+    			"from": "git-default-1.0"
+    		}
+    	}]
+    }
+
+    http://localhost:7001/didispace/test
+    {
+    	"name": "didispace",
+    	"profiles": ["test"],
+    	"label": null,
+    	"version": "e7ec50a9c4f17add19ddeff14ea43a00366c6df7",
+    	"state": null,
+    	"propertySources": [{
+    		"name": "https://github.com/yangyang0001/config/springcloud_inaction/config-repo/didispace-test.properties",
+    		"source": {
+    			"from": "git-dev-1.0"
+    		}
+    	}, {
+    		"name": "https://github.com/yangyang0001/config/springcloud_inaction/config-repo/didispace.properties",
+    		"source": {
+    			"from": "git-default-1.0"
+    		}
+    	}]
+    }
+
+    http://localhost:7001/didispace/prod
+    {
+    	"name": "didispace",
+    	"profiles": ["prod"],
+    	"label": null,
+    	"version": "e7ec50a9c4f17add19ddeff14ea43a00366c6df7",
+    	"state": null,
+    	"propertySources": [{
+    		"name": "https://github.com/yangyang0001/config/springcloud_inaction/config-repo/didispace-prod.properties",
+    		"source": {
+    			"from": "git-prod-1.0"
+    		}
+    	}, {
+    		"name": "https://github.com/yangyang0001/config/springcloud_inaction/config-repo/didispace.properties",
+    		"source": {
+    			"from": "git-default-1.0"
+    		}
+    	}]
+    }
+
+    http://localhost:7001/didispace/dev
+    {
+    	"name": "didispace",
+    	"profiles": ["dev"],
+    	"label": null,
+    	"version": "e7ec50a9c4f17add19ddeff14ea43a00366c6df7",
+    	"state": null,
+    	"propertySources": [{
+    		"name": "https://github.com/yangyang0001/config/springcloud_inaction/config-repo/didispace-dev.properties",
+    		"source": {
+    			"from": "git-dev-1.0"
+    		}
+    	}, {
+    		"name": "https://github.com/yangyang0001/config/springcloud_inaction/config-repo/didispace.properties",
+    		"source": {
+    			"from": "git-default-1.0"
+    		}
+    	}]
+    }
+
+搭建一个客户端 springcloud_config_client 方便以后查阅
+
+    必须要有 bootstrap.properties 文件, 内部配置用来连接配置中心
+
+    每当修改完成 git 中的配置文件后, 对应的服务必须要刷新, 刷新方式如下(必须是POST请求):
+
+    # 配置 监控中心, 手动刷新网关 以获取最新的网关配置
+    management.endpoints.web.exposure.include=*
+
+    curl -X POST http://localhost:7002/actuator/refresh
+    ["config.client.version","from"]%
 
 
-
-
-
-
+--------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------- 第9章 消息总线 Spring Cloud Bus -----------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------
 
 
 

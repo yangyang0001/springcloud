@@ -55,6 +55,13 @@
             <artifactId>spring-cloud-config-server</artifactId>
         </dependency>
 
+        <!-- 配置中心服务端 消息总线依赖 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+        </dependency>
+
+
 
     </dependencies>
 

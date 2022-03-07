@@ -19,6 +19,20 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <modules>
+        <module>springcloud_common_config</module>
+        <module>springcloud_eureka_server</module>
+        <module>springcloud_hello_service</module>
+        <module>springcloud_hello_service_api</module>
+        <module>springcloud_feign_consumer</module>
+        <module>springcloud_ribbon_consumer</module>
+        <module>springcloud_zuul</module>
+        <module>springcloud_config_server</module>
+        <module>springcloud_config_client</module>
+        <module>springboot_rabbitmq</module>
+        <module>springboot_kafka</module>
+    </modules>
+
     <dependencies>
 
         <dependency>

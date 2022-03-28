@@ -10,44 +10,26 @@
     </parent>
 
     <groupId>com.deepblue</groupId>
-    <artifactId>springcloud</artifactId>
+    <artifactId>springcloud_sleuth_trace_2</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>springcloud</name>
-    <description>springcloud</description>
+    <name>springcloud_sleuth_trace_2</name>
+    <description>springcloud_sleuth_trace_2</description>
 
     <properties>
         <java.version>1.8</java.version>
     </properties>
 
-    <modules>
-        <module>springcloud_common_config</module>
-        <module>springcloud_eureka_server</module>
-        <module>springcloud_hello_service</module>
-        <module>springcloud_hello_service_api</module>
-        <module>springcloud_feign_consumer</module>
-        <module>springcloud_ribbon_consumer</module>
-        <module>springcloud_zuul</module>
-        <module>springcloud_config_server</module>
-        <module>springcloud_config_client</module>
-        <module>springboot_rabbitmq</module>
-        <module>springboot_kafka</module>
-        <module>springcloud_stream_hello_producer</module>
-        <module>springcloud_stream_hello_consumer</module>
-        <module>springcloud_sleuth_trace_1</module>
-        <module>springcloud_sleuth_trace_2</module>
-    </modules>
-
     <dependencies>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.deepblue</groupId>
+            <artifactId>springcloud_common_config</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
@@ -56,7 +38,35 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Finchley.SR4</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

@@ -31,6 +31,8 @@
         <module>springcloud_config_client</module>
         <module>springboot_rabbitmq</module>
         <module>springboot_kafka</module>
+        <module>springcloud_stream_hello_producer</module>
+        <module>springcloud_stream_hello_consumer</module>
     </modules>
 
     <dependencies>

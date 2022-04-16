@@ -22,7 +22,7 @@ public class PartitionTest {
 	
 	static {
 		//服务器节点的匹配
-		kafkaProperties.put("bootstrap.servers", "127.0.0.1:9092");
+		kafkaProperties.put("bootstrap.servers", "192.168.188.35:9092, 192.168.188.35:9092, 192.168.188.35:9092");
 
 		//key序列化规则器
 		kafkaProperties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");

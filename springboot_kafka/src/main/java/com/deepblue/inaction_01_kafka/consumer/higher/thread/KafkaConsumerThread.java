@@ -35,6 +35,7 @@ public class KafkaConsumerThread extends Thread{
 					System.out.println("value ------------:" + consumerRecord.value());
 					System.out.println("============================================================================");
 				}
+				Thread.sleep(1000L);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

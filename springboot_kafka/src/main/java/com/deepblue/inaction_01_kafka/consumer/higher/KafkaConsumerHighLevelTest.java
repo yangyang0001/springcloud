@@ -1,3 +1,4 @@
+package com.deepblue.inaction_01_kafka.consumer.higher;
 
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
@@ -20,7 +21,7 @@ public class KafkaConsumerHighLevelTest{
 	private static Properties config = new Properties();
 	private static KafkaConsumer consumer = null;
 	
-	private static String BROKER_LIST = "192.168.120.110:9092,192.168.120.150:9092,192.168.120.224:9092";
+	private static String BROKER_LIST = "192.168.188.35:9092, 192.168.188.35:9092, 192.168.188.35:9092";
 
 	
 	static {

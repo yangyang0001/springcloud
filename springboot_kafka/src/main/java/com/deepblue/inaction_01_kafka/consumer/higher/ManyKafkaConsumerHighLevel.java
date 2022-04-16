@@ -21,7 +21,7 @@ import java.util.*;
 @SuppressWarnings({"rawtypes","unchecked"})
 public class ManyKafkaConsumerHighLevel {
 
-	private static String BROKER_LIST = "192.168.120.110:9092,192.168.120.150:9092,192.168.120.224:9092";
+	private static String BROKER_LIST = "192.168.188.35:9092, 192.168.188.35:9092, 192.168.188.35:9092";
 
 	private static KafkaConsumer getConsumer() {
 		KafkaConsumer consumer = null;

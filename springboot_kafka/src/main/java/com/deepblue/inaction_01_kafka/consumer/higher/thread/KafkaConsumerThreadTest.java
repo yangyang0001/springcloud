@@ -8,7 +8,7 @@ public class KafkaConsumerThreadTest {
 	public static void main(String[] args) {
 		
 		Map<String, Object> config = new HashMap<String, Object>();
-		config.put("bootstrap.servers", "127.0.0.1:9092,127.0.0.1:9093,127.0.0.1:9094");
+		config.put("bootstrap.servers", "192.168.188.35:9092, 192.168.188.35:9092, 192.168.188.35:9092");
 		config.put("group.id", "test");	//属于哪个分组
 		config.put("client.id", "test");	//客户端定义一个ID,区分不同的客户端!
 		/**

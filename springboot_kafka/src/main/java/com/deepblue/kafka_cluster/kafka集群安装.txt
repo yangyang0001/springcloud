@@ -1,0 +1,12 @@
+启动kafka命令:
+
+安装 jdk
+
+安装 kafka
+
+启动 kafka
+
+    sh kafka-server-start.sh  -daemon ../config/server.properties
+
+
+

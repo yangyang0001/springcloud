@@ -19,6 +19,299 @@ systemctl stop firewalld.service
  #禁止firewall开机启动
 systemctl disable firewalld.service
 
+启动命令
+    rabbitmq-server start &
+    如果使用lsof –i:5672出现如下的图片表示启动成功
+
+查看rabbitmq启动的状态
+    rabbitmqctl status
+
+服务的停止
+    rabbitmqctl stop_app
+
+管理插件
+    rabbitmq-plugins enable rabbitmq_management
+
+    访问: http://192.168.188.19:15672 就可以看到管理后台页面了! guest 用户是不能访问的, 参考说明: 01_rabbitmq_web管理插件.png
+
+--------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------- 第5章 RabbitMQ管理 ------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------
+多租户与权限
+    vhost 之间是绝对隔离的, 每一个 vhost 理论上是一个独立的 小RabbitMQ 服务器! 不同 vhost 之间的 exchange 和 queue 是不能进行绑定的!
+
+    创建 vhost 格式: add_vhost <vhost>
+    [root@localhost sbin]# ./rabbitmqctl add_vhost vhost1
+    Creating vhost "vhost1"
+
+    删除 vhost 格式: delete_vhost <vhost>
+    [root@localhost sbin]# ./rabbitmqctl delete_vhost vhost1
+    Deleting vhost "vhost1"
+
+    查看当前 rabbitmq 服务下的 所有 vhost
+    [root@localhost sbin]# ./rabbitmqctl list_vhosts
+    Listing vhosts
+    /
+
+    查看当前 rabbitmq 服务下的 vhost 是否开启了 trace 功能
+    [root@localhost sbin]# ./rabbitmqctl list_vhosts name tracing
+    Listing vhosts
+    /       false
+
+用户管理
+    创建用户命令:
+    [root@localhost sbin]# rabbitmqctl add_user rabbit_yang 123456
+    Creating user "rabbit_yang"
+
+    变更用户密码:
+    [root@localhost sbin]# rabbitmqctl change_password rabbit_yang 123
+    Changing password for user "rabbit_yang"
+
+    校验用户
+    [root@localhost sbin]# rabbitmqctl authenticate_user root 123456
+    Authenticating user "root"
+    Success
+
+    删除用户
+    [root@localhost sbin]# rabbitmqctl delete_user rabbit_yang
+    Deleting user "rabbit_yang"
+
+    用户的角色管理, 设置用户角色
+    [root@localhost sbin]# rabbitmqctl set_user_tags guest administrator
+    Setting tags for user "guest" to [administrator]
+
+授权问题:
+    对用户的授权是 指在 vhost 级别对 用户授权的!
+
+    添加新用户, root 密码:123456
+    [root@localhost sbin]# rabbitmqctl add_user root 123456
+    Creating user "root"
+
+    给用户赋予管理员角色:
+    [root@localhost sbin]# rabbitmqctl set_user_tags root administrator
+    Setting tags for user "root" to [administrator]
+
+    给用户赋予所有权限, 格式: set_permissions [-p <vhost>] <user> <conf> <write> <read>
+    [root@localhost sbin]# rabbitmqctl set_permissions -p / root '.*' '.*' '.*'
+    Setting permissions for user "root" in vhost "/"
+
+
+    查看 vhost 下用户的权限
+    [root@localhost sbin]# rabbitmqctl list_permissions -p /
+    Listing permissions in vhost "/"
+    guest   .*      .*      .*
+    root    .*      .*      .*
+
+
+Web端管理
+    在三个结点上同时启动管理插件
+    rabbitmq-plugins enable rabbitmq_management
+
+    访问: http://192.168.188.19:15672 就可以看到管理后台页面了! guest 用户是不能访问的, 参考说明: 01_rabbitmq_web管理插件.png
+
+    关闭管理插件
+    rabbitmq-plugins disable rabbitmq_management
+
+应用与集群管理
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------- 第6章 RabbitMQ配置 ------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------- 第7章 RabbitMQ运维 ------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------
+集群架构前置:
+    单台的 RabbitMQ 可以满足 1000条消息的吞吐量, 如果现在要满足 10万条信息的吞吐量, 就需要搭建集群;
+
+    在通用的 RabbitMQ 中, 只会在单节点中 创建 队列相关的信息, (镜像队列 可以解决这个问题), 因此 本章所讲的 RabbitMQ 集群是 不能保证消息不丢失的!
+
+多机多节点 架构:
+
+    安装 三个节点的 RabbitMQ 服务
+
+        安装Erlang, 下载 otp_src_19.3.tar.gz, 下载地址: http://www.erlang.org/downloads
+            https://www.rabbitmq.com/which-erlang.html 版本匹配关系表!
+            yum -y install gcc-c++
+            yum -y install ncurses-devel
+            yum -y install openssl openssl-devel
+            yum -y install unixODBC unixODBC-devel
+
+            1.tar –xvf otp_src_19.3.tar.gz (因为tar –zxvf 会报错)
+            2.cd otp_src_19.3
+            3.执行./configure --prefix=/home/erlang 指定安装目录
+            4.执行命令:make
+            5.执行命令:make install
+            6.修改环境变量
+
+            /etc/profile中添加如下
+            ################# 添加erlang环境变量, 做RabbitMQ的准备工作####
+            export ERLANG_HOME=/home/erlang
+            export PATH=$PATH:$ERLANG_HOME/bin
+
+            环境变量:执行命令, 使环境变量生效
+            source profile
+
+        安装rabbitmq
+            1.下载包 rabbitmq-server-generic-unix-3.6.10.tar.xz
+            2.解压tar xvf rabbitmq-server-generic-unix-3.6.10.tar.xz
+            3.在home下创建文件夹rabbitmq, 解压后的文件夹移入进去
+            3.配置环境变量
+
+            ###################### 添加rabbitmq环境变量 #####################
+            export RABBITMQ_HOME=/home/rabbitmq
+            export PATH=$PATH:$RABBITMQ_HOME/sbin
+            环境变量:执行命令, 使环境变量生效
+            source profile
+
+
+    配置 三个节点的 域名 /etc/hosts
+        192.168.188.19 node1
+        192.168.188.19 node2
+        192.168.188.19 node3
+
+    配置 三个节点相同的 cookie, 三个节点 一定要相同
+        cookie 文件默认路径为 /var/lib/rabbitmq/.erlang.cookie 或者 $HOME/.erlang.cookie;
+        cookie 相当于密钥令牌, 集群中的 RabbitMQ 节点需要通过交换密钥令牌以获得相互认证。 如果节点的密钥令牌不一致, 那么在配置节点时就会有如下的报错
+
+        // cookie 具体位置如下:
+        [root@node1 ~]# cat /root/.erlang.cookie
+        NRWSQAMWKCMHLOMJPUSA
+
+    配置集群:
+        [root@node1 ~]# rabbitmq-server start &
+        [1] 1513
+
+        [root@node2 ~]# rabbitmq-server start &
+        [1] 1632
+
+        [root@node3 ~]# rabbitmq-server start &
+        [1] 1514
+
+        接下来将3个节点组成一个集群, 需要以 node1 为基准点, 将 node2 node3 节点加入到 node1 中, 组成一个集群, 执行以下的4步:
+
+            // 将 node2 加入到以 node1 为基准的 集群中, 执行以下4步:
+            [root@node2 sbin]# ./rabbitmqctl stop_app
+            Stopping rabbit application on node rabbit@node2
+
+            [root@node2 sbin]# ./rabbitmqctl reset
+            Resetting node rabbit@node2
+
+            [root@node2 sbin]# ./rabbitmqctl join_cluster rabbit@node1 [--ram]
+            Clustering node rabbit@node2 with rabbit@node1
+
+            [root@node2 sbin]# ./rabbitmqctl start_app
+            Starting node rabbit@node2
+
+
+            // 将 node3 加入到以 node1 为基准的 集群中, 执行以下4步:
+            [root@node3 sbin]# ./rabbitmqctl stop_app
+            Stopping rabbit application on node rabbit@node3
+
+            [root@node3 sbin]# ./rabbitmqctl reset
+            Resetting node rabbit@node3
+
+            [root@node3 sbin]# ./rabbitmqctl join_cluster rabbit@node1 [--ram]
+            Clustering node rabbit@node3 with rabbit@node1
+
+            [root@node3 sbin]# ./rabbitmqctl start_app
+            Starting node rabbit@node3
+
+        重新启动的时候, 最后关闭的一定要首先启动; 如果关闭顺序为: node3, node2, node1; 启动顺序为: node1, node2, node3
+
+
+集群中节点的剔出:
+
+    特殊情况:
+        因为某种原因, 导致某个节点无法启动, 我们要将这个节点 剔出集群, 需要执行以下命令: --offline 表示当前节点是否要启动, 如果不加 则当前节点必须要启动着 rabbitmq 服务!
+        ./rabbitmqctl forget_cluster_node rabbit@node2 [--offline]
+
+        因为掉电, 造成所有节点都认为 还有其他节点在当前节点之后关闭, 这样就会 造成启动不了, 我们用以下命令来启动:
+        ./rabbitmqctl force_boot
+
+    我们将正常的 node1, node2, node3 的集群中, 将 node2 节点剔出:
+        首先在 node2 节点上 关闭rabbitmq 应用!
+        其次在 node1 或者 node3 上剔出就OK!
+
+
+集群中的节点类型: 
+    节点类型的种类 分为  磁盘节点(disc) 和 内存节点(ram), 且节点的类型只能是其中一种
+
+    节点的特性
+        磁盘节点: 能保证消息的不丢失
+        内存节点: 一旦挂掉消息就会丢失
+
+    如果集群是单节点, 那么当前节点一定是 磁盘节点!
+
+    查看当前节点类型:
+    [root@node2 sbin]# ./rabbitmqctl cluster_status
+    Cluster status of node rabbit@node2
+    [
+        {nodes,[{disc,[rabbit@node1,rabbit@node2,rabbit@node3]}]},
+        {running_nodes,[rabbit@node3,rabbit@node1,rabbit@node2]},
+        {cluster_name,<<"rabbit@node1">>},
+        {partitions,[]},
+        {alarms,[{rabbit@node3,[]},{rabbit@node1,[]},{rabbit@node2,[]}]}
+    ]
+
+
+    修改集群中节点的类型, 执行过程分为3步: 1、stop_app  2、 修改节点类型  3、 start_app
+    [root@node2 sbin]# ./rabbitmqctl stop_app
+    [root@node2 sbin]# ./rabbitmqctl change_cluster_node_type disc | ram
+    [root@node2 sbin]# ./rabbitmqctl start_app
+
+
+    TODO 除非有特殊要求, 建议所有节点类型 都使用磁盘节点类型!
+
+镜像集群 架构:
+
+    在上面的基础上执行以下 策略命令, 进行 镜像集群 搭建, 配置镜像队列,设置镜像队列策略（在任意一个节点上执行）
+    rabbitmqctl set_policy ha-all "^" '{"ha-mode":"all"}'
+
+    修改集群名称
+    [root@node1 sbin]# rabbitmqctl set_cluster_name mine_rabbitmq_cluster
+    Setting cluster name to mine_rabbitmq_cluster
+
+安装 HAProxy , 这里只搭建一台 使用 就OK了, 在 node1 结点上搭建!
+
+    1.	搭建两台HAProxy
+        a.	tar –zxvf ...解压相应的tar.gz包
+
+        b.	获取系统的内核信息:uname --al
+            Linux node1 3.10.0-1127.el7.x86_64 #1 SMP Tue Mar 31 23:36:51 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+
+        c.	执行如下命令进行编译:
+            make TARGET=linux2628 PREFIX=/home/haproxy ARCH=x86_64
+
+        d.	编译完成然后安装
+            make install PREFIX=/home/haproxy
+
+        e.	创建工作空间
+            mkdir /home/haproxywork
+
+        f.	复制haproxy文件到/usr/sbin下 
+            因为下面的haproxy.init启动脚本默认会去/usr/sbin下找，当然你也可以修改，不过比较麻烦。
+            cp /home/haproxy/sbin/haproxy /usr/sbin/
+
+        g.	复制haproxy脚本，到/etc/init.d下
+            cp /home/haproxy-1.8.20/examples/haproxy.init /etc/init.d/haproxy
+            chmod 755 /etc/init.d/haproxy
+
+        h.	创建系统账号
+            useradd -r haproxy
+
+        i.	创建配置文件
+            mkdir /etc/haproxy
+            vim /etc/haproxy/haproxy.cfg
+     
+    2.	启动HAProxy
+        /home/haproxy/sbin/haproxy -f /etc/haproxy/haproxy.cfg
+        通过页面展示看看是否启动成功:
+        http://192.168.188.19:45672/rabbitmq-admin
+
 
 
 

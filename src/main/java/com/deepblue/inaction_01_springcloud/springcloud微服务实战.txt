@@ -249,7 +249,7 @@ spring.profiles.active 参数使用:
     一旦使用这个属性, 除了加载 application.properties, 还得加载 application-${spring.profiles.active}.properties
 
 spring.application.name 的使用:
-    spring.application.name 不能使用下划线只能使用中划线, 这中破规则是太搞笑了! 老的 Ribbon 遗留的历史问题!
+    spring.application.name 不能使用下划线只能使用中划线, 这种破规则是太搞笑了! 老的 Ribbon 遗留的历史问题!
 
 Ribbon 的使用在新版中已经被封装掉了, 使用 @RestController 和  RestTemplate restTemplate; 就可以实现 Ribbon 负载均衡的效果了!
 
@@ -425,7 +425,9 @@ spring cloud hystrix 是熔断降级的一种东西!
 --------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------- 第6章 客户端负载均衡 Spring Cloud Feign ----------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------
-参考 springcloud_feign_consumer
+参考 springcloud_feign_consumer, springcloud_hello_service_api
+
+@FeignClient 注解中的 value 必须为 当前服务名称, 不区分大小写! 写在 springcloud_hello_service_api 中!
 
 Feign 客户端的使用
     代码重构后虽然能够起到不用 重写RequestMapping() 之类的作用, 但是它破坏了 Controller 层的定义;

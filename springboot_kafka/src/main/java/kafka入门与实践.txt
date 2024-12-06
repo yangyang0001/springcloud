@@ -1,0 +1,2 @@
+export KAFKA_HOME=/home/kafka_2.12-2.2.0
+export PATH=$KAFKA_HOME/bin:$PATH

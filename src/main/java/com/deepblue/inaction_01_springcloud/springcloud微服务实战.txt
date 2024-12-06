@@ -522,7 +522,7 @@ cookie 和 http 头部 信息问题:
         zuul.routes.hello-service.custom-sensitive-headers=true
 
 
-本工程中路由对应的测试连接:
+本工程中路由对应的测试连接:(任何外部访问都是通过 网关来进行访问, 即必须通过 当前网关服务进行访问!)
     http://localhost:5555/springcloud-hello-service/hello-service-say-hello
     http://localhost:5555/springcloud-hello-service/hello-service-say-hello-person?username=aaaa
 
@@ -558,6 +558,7 @@ cookie 和 http 头部 信息问题:
         确保 当前节点能够获取到最新的网关配置!
 
         # 配置 监控中心, 手动刷新网关 以获取最新的网关配置
+        # 默认情况下，只有/info和/health端点是启用的，其他端点默认是禁用的，需要通过配置来决定哪些端点应该对外暴露。
         management.endpoints.web.exposure.include=*
 
         刷新使用方式(必须是POST请求):
@@ -661,6 +662,7 @@ cookie 和 http 头部 信息问题:
     每当修改完成 git 中的配置文件后, 对应的服务必须要刷新, 刷新方式如下(必须是POST请求):
 
     # 配置 监控中心, 手动刷新网关 以获取最新的网关配置
+    # 默认情况下，只有/info和/health端点是启用的，其他端点默认是禁用的，需要通过配置来决定哪些端点应该对外暴露。
     management.endpoints.web.exposure.include=*
 
     curl -X POST http://localhost:7002/actuator/refresh
@@ -679,9 +681,14 @@ cookie 和 http 头部 信息问题:
         最终目的: 刷新 任意一台 配置中心客户端节点, 就可以刷新 所有 配置中心客户端节点, 使每个配置中心客户端 获取最新的配置!
 
         刷新方式:
-            curl -X POST http://localhost:7002/actuator/bus-refresh
+            curl -X POST http://localhost:7002/actuator/bus-refresh 或者
+            curl -X POST http://localhost:7002/actuator/refresh
             或者
-            curl -X POST http://localhost:7003/actuator/bus-refresh
+            curl -X POST http://localhost:7003/actuator/bus-refresh 或者
+            curl -X POST http://localhost:7003/actuator/refresh
+
+    yangjianwei@yangjianweideMacBook-Pro springcloud % curl -X POST http://localhost:7002/actuator/refresh
+    ["config.client.version","from"]%
 
     消息总线 接入到　 配置中心服务端和客户端: 参考 springcloud_config_client 和 springcloud_config_server
 

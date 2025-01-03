@@ -21,13 +21,13 @@ public class KafkaConsumerHighLevelTest{
 	private static Properties config = new Properties();
 	private static KafkaConsumer consumer = null;
 	
-	private static String BROKER_LIST = "192.168.188.35:9092, 192.168.188.35:9092, 192.168.188.35:9092";
+	private static String BROKER_LIST = "192.168.188.70:9092, 192.168.188.71:9092, 192.168.188.72:9092";
 
 	
 	static {
 		config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_LIST);
 		config.put(ConsumerConfig.GROUP_ID_CONFIG, "first_group");	    //属于哪个分组
-//		config.put(ConsumerConfig.CLIENT_ID_CONFIG, "AAAA_CLIENT_0");	//客户端定义一个ID,区分不同的客户端!
+		config.put(ConsumerConfig.CLIENT_ID_CONFIG, "first_client_0");	//客户端定义一个ID,区分不同的客户端!
 
 		//配置是否从最开始的偏移量开始读取数据!(group_id和client_id取个全新的名字就OK了)[在测试的时候要特别注意,把这个注释掉]
 //		config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
@@ -273,7 +273,7 @@ public class KafkaConsumerHighLevelTest{
 		 * config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true); 		//显示设置偏移量自动提交
 		 * config.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 1000); //设置偏移量提交时间间隔
 		 */
-		String topic = "first-topic";
+		String topic = "GuPiaoHangQing";
 		consumeZiDongCommit(topic);
 
 		/**

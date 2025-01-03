@@ -22,14 +22,14 @@ public class PartitionTest {
 	
 	static {
 		//服务器节点的匹配
-		kafkaProperties.put("bootstrap.servers", "192.168.188.35:9092, 192.168.188.35:9092, 192.168.188.35:9092");
+		kafkaProperties.put("bootstrap.servers", "192.168.188.70:9092, 192.168.188.71:9092, 192.168.188.72:9092");
 
 		//key序列化规则器
 		kafkaProperties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 		//value序列化规则器
 		kafkaProperties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 		//在生产者中使用自定义的分区器!
-		kafkaProperties.put("partitioner.class", "com.inspur.partition.MyPartitioner");
+		kafkaProperties.put("partitioner.class", "com.deepblue.inaction_01_kafka.partition.MyPartitioner");
 	}
 	
 	private static KafkaProducer<String, String> kafkaProducer = new KafkaProducer<String, String>(kafkaProperties);

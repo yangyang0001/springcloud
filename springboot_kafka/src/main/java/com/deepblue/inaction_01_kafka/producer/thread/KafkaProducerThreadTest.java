@@ -16,7 +16,7 @@ public class KafkaProducerThreadTest {
 	
 	private static Properties configs = new Properties();
 	private static KafkaProducer<String, String> kafkaProducer = null;
-	private static String BROKER_LIST = "192.168.188.35:9092, 192.168.188.35:9092, 192.168.188.35:9092";
+	private static String BROKER_LIST = "192.168.188.70:9092, 192.168.188.71:9092, 192.168.188.72:9092";
 	private static int THREAD_NUM = 20;
 	private static int MSG_SIZE = 50;
 	private static String TOPIC = "GuPiaoHangQing";

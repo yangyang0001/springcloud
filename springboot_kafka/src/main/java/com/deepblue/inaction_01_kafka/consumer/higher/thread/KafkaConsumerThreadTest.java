@@ -8,9 +8,9 @@ public class KafkaConsumerThreadTest {
 	public static void main(String[] args) {
 		
 		Map<String, Object> config = new HashMap<String, Object>();
-		config.put("bootstrap.servers", "192.168.188.35:9092, 192.168.188.35:9092, 192.168.188.35:9092");
-		config.put("group.id", "test");	//属于哪个分组
-		config.put("client.id", "test");	//客户端定义一个ID,区分不同的客户端!
+		config.put("bootstrap.servers", "192.168.188.70:9092, 192.168.188.71:9092, 192.168.188.72:9092");
+		config.put("group.id", "first_group");		//属于哪个分组
+		config.put("client.id", "first_client_1");	//客户端定义一个ID,区分不同的客户端!
 		/**
 		 * 自动提交的时候要配置的连个参数!
 		 * 自动提交和手动提交偏移量是kafka对offset的两种提交策略!自动提交的一定要配置这两个参数!(这也是默认的提交策略)
@@ -24,7 +24,7 @@ public class KafkaConsumerThreadTest {
 		config.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		config.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer") ;
 		String topic = "GuPiaoHangQing";
-		
+
 		for(int i = 0; i < 5; i++){
 			new KafkaConsumerThread(config, topic, i).start();
 		}

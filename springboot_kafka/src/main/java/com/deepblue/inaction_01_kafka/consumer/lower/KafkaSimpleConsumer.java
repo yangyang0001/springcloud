@@ -38,7 +38,7 @@ public class KafkaSimpleConsumer {
 	 * 指定 Kafka 集群代理列表 ， 列表无需指定所有的代理地址 ，
 	 * 只要保证能连上 Kafka 集群即可， 一般建议多个节点时至少写两个节点的地址
 	 */
-	private static String BROKER_LIST = "192.168.188.35:9092, 192.168.188.35:9092, 192.168.188.35:9092";
+	private static String BROKER_LIST = "192.168.188.70:9092, 192.168.188.71:9092, 192.168.188.72:9092";
 	
 	/**连接超时时间设置为 1 分钟 */
 	private static final int TIME_OUT = 60 * 1000;

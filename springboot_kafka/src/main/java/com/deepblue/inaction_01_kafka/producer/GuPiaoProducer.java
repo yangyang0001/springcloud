@@ -15,7 +15,7 @@ import java.util.Random;
 public class GuPiaoProducer {
 	
 	private static Logger LOG = Logger.getLogger(GuPiaoProducer.class);
-	private static String BROKER_LIST = "192.168.188.35:9092, 192.168.188.35:9092, 192.168.188.35:9092";
+	private static String BROKER_LIST = "192.168.188.70:9092, 192.168.188.71:9092, 192.168.188.72:9092";
 	private static String TOPIC = "GuPiaoHangQing";
 //	private static String TOPIC = "first-topic";
 	private static int MSG_SIZE = 20;

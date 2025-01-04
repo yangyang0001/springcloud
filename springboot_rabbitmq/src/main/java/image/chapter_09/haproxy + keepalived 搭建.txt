@@ -1,0 +1,97 @@
+---------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------- HAProxy 安装 ---------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------
+1.	搭建两台HAProxy 和 KeepAlived 是同样的两台服务器! 首先是 第一台服务器: haproxy-keepalived-node1 192.168.188.80
+    a.
+    cd /home/linux_libs
+    tar –zxvf haproxy-1.8.20.tar.gz 解压相应的tar.gz包
+
+    b.	获取系统的内核信息:uname --al
+    Linux localhost.localdomain 3.10.0-862.el7.x86_64 #1 SMP Fri Apr 20 16:44:24 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+
+    c.	执行如下命令进行编译:
+    make TARGET=linux2628 PREFIX=/home/haproxy ARCH=x86_64
+
+    d.	编译完成然后安装
+    make install PREFIX=/home/haproxy
+
+    e.	创建工作空间
+    mkdir /home/haproxywork
+
+    f.	复制haproxy文件到/usr/sbin下
+    因为下面的haproxy.init启动脚本默认会去/usr/sbin下找，当然你也可以修改，不过比较麻烦。
+    cp /home/haproxy/sbin/haproxy /usr/sbin/
+
+    g.	复制haproxy脚本，到/etc/init.d下
+    mv haproxy-1.8.20 /home/
+    cp /home/haproxy-1.8.20/examples/haproxy.init /etc/init.d/haproxy
+    chmod 755 /etc/init.d/haproxy
+
+    h.	创建系统账号
+    useradd -r haproxy
+
+    i.	创建配置文件
+    mkdir /etc/haproxy
+    vim /etc/haproxy/haproxy.cfg
+
+2.	启动HAProxy
+    [root@localhost ~]# haproxy -f /etc/haproxy/haproxy.cfg
+    通过页面展示看看是否启动成功:
+    http://192.168.188.80:45672/rabbitmq-admin
+
+3.  复制第一台 192.168.188.80 服务器, 第二台服务器 IP 为 192.168.188.81
+    [root@localhost ~]# haproxy -f /etc/haproxy/haproxy.cfg
+    通过页面展示看看是否启动成功:
+    http://192.168.188.81:45672/rabbitmq-admin
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------- KeepAlived 安装 ------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------
+1.	搭建两台 KeepAlived 两台服务器! 首先是第一台服务器 在 haproxy-keepalived-node1, IP 为 192.168.188.80 (keepalived 当前节点为 master 节点)
+    a.  下载 keepalived-2.0.12.tar.gz 文件
+        cd /home/linux_libs
+        wget http://www.keepalived.org/software/keepalived-2.0.12.tar.gz
+
+    b.  解压 keepalived-2.0.12.tar.gz 文件
+        chmod 777 keepalived-2.0.12.tar.gz
+        tar -zxvf keepalived-2.0.12.tar.gz
+
+    c.  编译并安装 keepalived
+        cd /home/linux_libs/keepalived-2.0.12
+        ./configure
+        make && make install
+
+    d.  创建 keepalived 安装目录, 并 编辑 keepalived 文件
+        mkdir /etc/keepalived
+        vim /etc/keepalived/keepalived.conf     (复制 src/main/java/image/chapter_09/keepalived-master/keepalived.conf 文件中的内容)
+
+    e.  搭建 第二台 KeepAlived 服务器! 在 haproxy-keepalived-node2 中!
+        按照 a - d 执行, 在 d 步骤的时候, (复制 src/main/java/image/chapter_09/keepalived-backup/keepalived.conf 文件中的内容)
+
+
+2.	启动 两台 keepalived 服务
+    service keepalived start
+
+    查看keepalived的状态:
+    service keepalived stop 	//停止
+    service keepalived start	//启动
+    service keepalived restart 	//停止
+    service keepalived status 	//查看状态
+
+
+3.  查看 并验证 keepalived 高可用!
+    http://192.168.188.10:45672/rabbitmq-admin, 这里的 IP 为 VIP
+
+    在 haproxy-keepalived-node1 中 可以查看 ip addr
+        有 inet 192.168.188.10/32 scope global ens33 的信息, 这在keepalived backup 中是没有的, 只有在keepalived master 节点中才有!
+            2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+                link/ether 00:0c:29:17:25:4f brd ff:ff:ff:ff:ff:ff
+                inet 192.168.188.80/24 brd 192.168.188.255 scope global noprefixroute dynamic ens33
+                   valid_lft 84056sec preferred_lft 84056sec
+                inet 192.168.188.10/32 scope global ens33
+
+    验证 keepalived 高可用, 关闭掉 keepalived master 节点, 在 keepalived backup 中 使用 ip addr 就可以了,
+        就可以看到 上面的 inet 192.168.188.10/32 scope global ens33 信息了
+        同样 http://192.168.188.10:45672/rabbitmq-admin 照样是可以链接的!

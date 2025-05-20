@@ -28,7 +28,8 @@ public class ManyKafkaConsumerHighLevel {
 
 		Properties config = new Properties();
 		config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_LIST);
-		config.put(ConsumerConfig.GROUP_ID_CONFIG, "first_group");	    //属于哪个分组
+//		config.put(ConsumerConfig.GROUP_ID_CONFIG, "first_group");	    //属于哪个分组
+		config.put(ConsumerConfig.GROUP_ID_CONFIG, "second_group");	    //属于哪个分组
 //		config.put(ConsumerConfig.CLIENT_ID_CONFIG, "AAAA_CLIENT_0");	//客户端定义一个ID,区分不同的客户端!
 
 		//配置是否从最开始的偏移量开始读取数据!(group_id和client_id取个全新的名字就OK了)[在测试的时候要特别注意,把这个注释掉]
@@ -97,7 +98,8 @@ public class ManyKafkaConsumerHighLevel {
 		int count = 0;
 		try {
 			while(true){
-				ConsumerRecords<String, String> consumerRecords = consumer.poll(100);
+				ConsumerRecords<String, String> consumerRecords = consumer.poll(10000);
+				System.out.println("consumerRecords.count -----------------------------:" + consumerRecords.count());
 				for(ConsumerRecord<String, String> consumerRecord : consumerRecords){
 					System.out.println("partition ---:" + consumerRecord.partition() +
 							           ", topic -----:" + consumerRecord.topic() +
@@ -105,6 +107,7 @@ public class ManyKafkaConsumerHighLevel {
 								       ", value -----:" + consumerRecord.value()  +
 							           ", key -------:" + consumerRecord.key());
 				}
+				Thread.sleep(2000L);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -323,7 +326,7 @@ public class ManyKafkaConsumerHighLevel {
 		 * config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true); 		//显示设置偏移量自动提交
 		 * config.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 1000); //设置偏移量提交时间间隔
 		 */
-		String topic = "first-topic";
+		String topic = "GuPiaoHangQing";
 		consumeZiDongCommit(topic);
 
 		/**

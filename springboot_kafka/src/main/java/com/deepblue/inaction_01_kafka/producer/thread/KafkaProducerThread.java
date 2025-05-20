@@ -37,6 +37,11 @@ public class KafkaProducerThread implements Runnable{
 									   ",partition ----:" + metadata.partition() + 
 									   ",offset -------:" + metadata.offset());	
 				}
+				try {
+					Thread.sleep(1000L);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 	}

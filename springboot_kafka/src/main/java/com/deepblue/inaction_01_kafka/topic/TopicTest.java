@@ -16,11 +16,11 @@ import java.util.Properties;
  */
 public class TopicTest {
 	
-	private static final String ZK_CONNECT = "192.168.188.15:2181,192.168.188.16:2181,192.168.188.17:2181,192.168.188.18:2181";
+	private static final String ZK_CONNECT = "192.168.188.66:2181,192.168.188.67:2181,192.168.188.68:2181,192.168.188.69:2181";
 	private static final int SESSION_TIMEOUT = 30000;
 	private static final int CONNECT_TIMEOUT = 30000;
-//	private static final String TOPIC = "GuPiaoHangQing";
-	private static final String TOPIC = "topic-api-test";
+	private static final String TOPIC = "GuPiaoHangQing";
+//	private static final String TOPIC = "topic-api-test";
 
 	
 	

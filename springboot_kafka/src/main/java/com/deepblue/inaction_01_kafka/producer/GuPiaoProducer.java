@@ -45,10 +45,11 @@ public class GuPiaoProducer {
 		GuPiao gupiao = new GuPiao();
 		Random random = new Random();
 		int price = random.nextInt(100) + 1;
-		
-		gupiao.setCurrentTime(System.currentTimeMillis());
+
+		Long currentTime = System.currentTimeMillis();
+		gupiao.setCurrentTime(currentTime);
 		gupiao.setGuPiaoName("深蓝集团");
-		gupiao.setGuPiaoNickName("CDBT1");
+		gupiao.setGuPiaoNickName("CDBT-" + currentTime);
 		gupiao.setGuPiaoPrice(price);
 		gupiao.setGuPiaoDesc("深蓝集团股票");
 		
@@ -65,10 +66,10 @@ public class GuPiaoProducer {
 				/**
 				 * 设置不同的key 测试 分区管理器是否进行不同的路由存放
 				 */
-//				record = new ProducerRecord<String, String>(TOPIC, null, gupiao.getCurrentTime(),
-//						 gupiao.getGuPiaoNickName(), gupiao.toString());
 				record = new ProducerRecord<String, String>(TOPIC, null, gupiao.getCurrentTime(),
-						 null, gupiao.toString());
+						 gupiao.getGuPiaoNickName(), gupiao.toString());
+//				record = new ProducerRecord<String, String>(TOPIC, null, gupiao.getCurrentTime(),
+//						 null, gupiao.toString());
 				kafkaProducer.send(record);//发送并遗忘!
 				if(num++ % 100 == 0	){
 					Thread.currentThread().sleep(1000L);		//每100条消息记录线程休息1s

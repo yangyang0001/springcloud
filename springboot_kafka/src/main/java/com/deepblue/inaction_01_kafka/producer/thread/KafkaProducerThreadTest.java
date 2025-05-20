@@ -38,10 +38,11 @@ public class KafkaProducerThreadTest {
 		GuPiao gupiao = new GuPiao();
 		Random random = new Random();
 		int price = random.nextInt(100) + 1;
-		
-		gupiao.setCurrentTime(System.currentTimeMillis());
+
+		Long currentTime = System.currentTimeMillis();
+		gupiao.setCurrentTime(currentTime);
 		gupiao.setGuPiaoName("深蓝集团");
-		gupiao.setGuPiaoNickName("CDBT");
+		gupiao.setGuPiaoNickName("CDBT-" + currentTime);
 		gupiao.setGuPiaoPrice(price);
 		gupiao.setGuPiaoDesc("深蓝集团股票");
 		
@@ -61,6 +62,7 @@ public class KafkaProducerThreadTest {
 		try {
 			for(int i= 0; i < MSG_SIZE; i++){
 				gupiao = createGuPiaoInfo();
+				// public ProducerRecord(String topic, Integer partition, Long timestamp, K key, V value) {
 				producerRecord = new ProducerRecord<String, String>(TOPIC, null, gupiao.getCurrentTime(), gupiao.getGuPiaoNickName(), gupiao.toString());
 				producerThread = new KafkaProducerThread(kafkaProducer, producerRecord);
 				executor.submit(producerThread);
